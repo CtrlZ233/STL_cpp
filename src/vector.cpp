@@ -5,11 +5,14 @@
 #include <memory>
 #include <iterator>
 #include<iostream>
+#include<string>
+
 using namespace std;
 template <typename T>
 class vector
 {
     public:
+        
         using value_type = T;
         using iterator = value_type *;
         using size_type = std::size_t;
@@ -24,6 +27,9 @@ class vector
         value_type &at(size_type i) const;
         void push_back(const value_type &new_elem);
         void pop_back();
+        void insert(iterator iter, const value_type &new_elem);
+        void earse(iterator start_itr, iterator end_iter);
+        void print_all_elem();
     
     public:
         iterator start_ptr = nullptr;
@@ -95,12 +101,14 @@ void vector<T>::check_cap(){
     }
 }
 
+
 template<typename T>
 void vector<T>:: push_back(const value_type & new_elem){
     check_cap();
     alloc.construct(end_ptr, new_elem);
     end_ptr ++ ;
-}
+;}
+
 
 template <typename T> 
 void vector<T>::pop_back()
@@ -111,19 +119,59 @@ void vector<T>::pop_back()
     }
 }
 
-int main(){
-    vector<int> v;
-    v.push_back(1);
-    v.push_back(2);
-    v.push_back(3);
-    v.push_back(4);
-    vector<int>::iterator iter = v.start_ptr;
-    while(iter!=v.end_ptr){
-        cout << *iter << " ";
+template<typename T>
+void vector<T>::insert(iterator iter, const value_type &new_elem){
+    value_type now_elem = new_elem;
+    while(iter < end_ptr){
+        value_type tmp = *iter;
+        alloc.construct(iter, now_elem);
+        now_elem = tmp;
         iter ++;
     }
+    push_back(now_elem);
+}
 
-    cout << endl;
-    system("pause");
+template<typename T>
+void vector<T>::earse(iterator start_iter, iterator end_iter){
+    if(end_iter < end_ptr){
+        iterator tmp1 = start_iter;
+        iterator tmp2 = end_iter;
+        while(tmp2 < end_ptr){
+            alloc.construct(tmp1, * tmp2);
+            tmp1 ++;
+            tmp2 ++;
+        }
+        end_ptr = tmp1;
+    }
+}
+
+template<typename T>
+void vector<T>::print_all_elem(){
+    vector<T>::iterator iter = start_ptr;
+    while(iter!=end_ptr){
+        std::cout<< *iter <<" ";
+        iter++;
+    }
+    std::cout << endl;
+}
+
+
+int main(){
+    vector<string> v;
+    v.push_back("one");
+    v.push_back("two");
+    v.push_back("three");
+    v.push_back("four");
+    
+    v.print_all_elem();
+
+    v.insert(v.start_ptr+2, "insert_1");
+    v.insert(v.start_ptr+3, "insert_2");
+    cout << "after insert elements..." << endl;
+    v.print_all_elem();
+
+    v.earse(v.start_ptr+2, v.start_ptr+4);
+    cout << "after earse elements..." << endl;
+    v.print_all_elem();
     
 }
