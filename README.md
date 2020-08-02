@@ -1,7 +1,7 @@
 # STL_cpp
 This is an exercise for personal learning， and realize basic STL components and functions based on c++. Many features are not complete, and if any question, welcome to contact me:328825619@qq.com
 
-# Vector Class:
+## Vector Class:
 The method my Vecotr class supported:
 ```bash
 begin():                    return a iterator point the start pointer.
@@ -19,10 +19,4 @@ insert():                   insert a new element to somewhere.
 empty():                    return true if vector is empty.
 clear():                    clear the vector.
 print_all_elem():           print all elements in vector.
-
-
-
-
-
-
 ```
