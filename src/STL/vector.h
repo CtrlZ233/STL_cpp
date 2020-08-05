@@ -18,7 +18,8 @@ class vector
         using size_type = std::size_t;
     
     public:
-        vector() = default;
+        vector()=default;
+        vector(const vector<T> &obj);
         ~vector();
         iterator begin() const;
         iterator end() const;
@@ -47,6 +48,15 @@ class vector
         void free_memory(iterator start_iter, iterator end_iter);
         void free();
 };
+
+template<typename T>
+vector<T>:: vector(const vector &obj){
+    this->start_ptr = alloc.allocate(obj.max_size());
+    this->end_ptr = uninitialized_copy(std::make_move_iterator(obj.start_ptr),
+                                std::make_move_iterator(obj.end_ptr), this->start_ptr);
+    this->cap_ptr = this->start_ptr + obj.max_size();
+}
+
 
 template <typename T>
 typename vector<T>:: iterator vector<T>::begin() const{
@@ -166,7 +176,8 @@ void vector<T>::earse(iterator start_iter, iterator end_iter){
     if(start_iter < start_ptr || end_iter > end_ptr){
         throw std::runtime_error("out of range");
     }
-    if(end_iter < end_ptr){
+    if(end_iter <= end_ptr){
+        // cout << "hhh" << endl;
         iterator tmp1 = start_iter;
         iterator tmp2 = end_iter;
         while(tmp2 < end_ptr){
