@@ -32,7 +32,7 @@ class vector
         void push_back(const value_type &new_elem);
         void pop_back();
         void insert(iterator iter, const value_type &new_elem);
-        void earse(iterator start_iter, iterator end_iter);
+        void erase(iterator start_iter, iterator end_iter);
         bool empty();
         void clear();
         void print_all_elem();
@@ -172,7 +172,7 @@ void vector<T>::insert(iterator iter, const value_type &new_elem){
 }
 
 template<typename T>
-void vector<T>::earse(iterator start_iter, iterator end_iter){
+void vector<T>::erase(iterator start_iter, iterator end_iter){
     if(start_iter < start_ptr || end_iter > end_ptr){
         throw std::runtime_error("out of range");
     }

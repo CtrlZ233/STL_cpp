@@ -2,7 +2,9 @@
 #include<stdlib.h>
 #include<iostream>
 #include<string>
-
+#include <memory>
+#include <cstddef>
+#include <stdexcept>
 using namespace std;
 
 template<typename T>
@@ -80,12 +82,29 @@ class MyIterator{
             return MyIterator<T>(tmp);
         }
         bool operator ==(const MyIterator<T> &i){
-            return this->iter == i.iter ? true: false;
+            return this->iter == i.iter;
         }
-        
+        bool operator != (const MyIterator<T> &i){
+            return !(*(this)==i);
+        }
+        bool operator < (const MyIterator<T> &i){
+            return this->iter < i->iter;
+        }
+        bool operator > (const MyIterator<T> &i){
+            return this->iter > i.iter;
+        }
+        bool operator >= (const MyIterator<T> &i){
+            return this->iter >= i.iter;
+        }
+
+        bool operator <= (const MyIterator<T> &i){
+            return this->iter <= i.iter;
+        }
+
         T operator *(){
             return this->iter->obj;
         }    
+
 }
 ;
 
@@ -94,21 +113,25 @@ class list{
     public:
         using value_type = T;;
         using size_type = std::size_t;
+        using iterator = MyIterator<T>;
     public:
         Node<T>* start_node;
         Node<T>* end_node;
         size_type size;
         Node<T>* head;
-        
+        std::allocator<Node<value_type>> alloc;
     public:
         list();
         // list(const list<T> &obj);
-        // ~list();
+        ~list();
         // void push_front(const value_type &new_elem);
         void push_back(const value_type &new_elem);
-        MyIterator<T> begin();
-        MyIterator<T> end();
+        void push_front(const value_type &new_elem);
+        iterator begin();
+        iterator end();
         bool empty();
+        void clear();
+
 };
 
 template<typename T>
@@ -120,6 +143,13 @@ list<T>::list(){
     end_node ->previous = head;
 }
 
+template<typename T>
+list<T>::~list(){
+    for(auto p = begin(); p!=end(); p++){
+        alloc.destroy(p.iter);
+    }
+    alloc.deallocate(start_node, end_node - start_node);
+}
 // template<typename T>
 // list<T>::list(const list<T> &obj){
 //     this-
@@ -127,7 +157,7 @@ list<T>::list(){
 
 template<typename T>
 void list<T>::push_back(const value_type &new_elem){
-    Node<T> *new_node = new Node<value_type>(new_elem);
+    Node<value_type> *new_node = new Node<value_type>(new_elem);
     this->end_node->previous->next = new_node;
     new_node->previous = this->end_node->previous;
     new_node->next = this->end_node;
@@ -135,6 +165,24 @@ void list<T>::push_back(const value_type &new_elem){
     if(this->start_node == this->head){
         this->start_node = new_node;
     }
+}
+
+template<typename T>
+void list<T>::push_front(const value_type &new_elem){
+    Node<value_type> *new_node = new Node<value_type>(new_elem);
+    Node<value_type> * tmp = this->start_node->next;
+    this->head->next = new_node;
+    new_node->previous = this->head;
+    if(empty()){
+        // cout<<"Hhhh"<<endl;
+        new_node->next = tmp;
+        tmp->previous = new_node;
+    }
+    else{
+        new_node->next = this->start_node;
+        this->start_node->previous = new_node;
+    }
+    this->start_node = new_node;
 }
 
 template<typename T>

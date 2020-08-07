@@ -25,7 +25,7 @@ int main(){
     // cout << "after insert elements..." << endl;
     // v.print_all_elem();
 
-    v.earse(v.start_ptr+1, v.start_ptr+3);
+    v.erase(v.start_ptr+1, v.start_ptr+3);
     // cout << "after earse elements..." << endl;
     v.print_all_elem();
     cout << v.max_size() << endl;
@@ -34,6 +34,8 @@ int main(){
     v.push_back("five");
     v.push_back("six");
     v.push_back("seven");
+
+    
     v.print_all_elem();
     cout << v.size() << endl;
     cout << v.max_size() << endl;

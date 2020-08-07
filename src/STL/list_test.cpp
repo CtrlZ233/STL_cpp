@@ -3,15 +3,24 @@
 using namespace std;
 int main(){
     list<string> L = list<string>();
+    L.push_front("zero");
+    cout << "Is empty ?" << L.empty() << endl;
     L.push_back("one");
+    
     L.push_back("two");
+    cout << "Is empty ?" << L.empty() << endl;
     L.push_back("three");
+    L.push_front("front");
     // cout << "hhh" <<endl;
     // cout<< L.start_node->obj << endl;
-    for(auto a = L.begin(); !(a==L.end()); a ++ ){
+    
+    list<string>::iterator a = L.begin();
+    list<string>::iterator b = L.end();
+    for(; a!=b; a ++ ){
         cout<< *(a) <<endl;
     }
     system("pause");
 }
+
 
 
