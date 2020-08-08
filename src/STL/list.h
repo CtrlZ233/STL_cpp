@@ -34,7 +34,7 @@ class MyIterator{
     
     public:
         MyIterator() = default;
-        MyIterator(Node<T>* &node_ptr){
+        MyIterator(Node<T>* node_ptr){
             this->iter = node_ptr;
         }
         MyIterator(const MyIterator<T>& obj){
@@ -88,7 +88,7 @@ class MyIterator{
             return !(*(this)==i);
         }
         bool operator < (const MyIterator<T> &i){
-            return this->iter < i->iter;
+            return this->iter < i.iter;
         }
         bool operator > (const MyIterator<T> &i){
             return this->iter > i.iter;
@@ -115,45 +115,70 @@ class list{
         using size_type = std::size_t;
         using iterator = MyIterator<T>;
     public:
+       
+        std::allocator<Node<value_type>> alloc;
+
+    private:
         Node<T>* start_node;
         Node<T>* end_node;
-        size_type size;
+        
         Node<T>* head;
-        std::allocator<Node<value_type>> alloc;
+        std::size_t num;
     public:
         list();
-        // list(const list<T> &obj);
+        list(const list<T> &obj);
         ~list();
+        std::size_t size() const;
         // void push_front(const value_type &new_elem);
         void push_back(const value_type &new_elem);
         void push_front(const value_type &new_elem);
-        iterator begin();
-        iterator end();
-        bool empty();
+        iterator begin() const;
+        iterator end() const;
+        bool empty() const;
         void clear();
-
+    private:
+        void free_memory(iterator start_iter, iterator end_iter);
 };
 
 template<typename T>
 list<T>::list(){
     head = new Node<T>;
-    start_node = head;
+    
     end_node = new Node<T>;
     head->next = end_node;
+    start_node = end_node;
     end_node ->previous = head;
+    this->num = 0;
 }
 
 template<typename T>
 list<T>::~list(){
-    for(auto p = begin(); p!=end(); p++){
-        alloc.destroy(p.iter);
-    }
+    free_memory(begin(), end());
     alloc.deallocate(start_node, end_node - start_node);
 }
-// template<typename T>
-// list<T>::list(const list<T> &obj){
-//     this-
-// }
+
+template<typename T>
+list<T>::list(const list<T> &obj){
+    if(!obj.empty()){
+        list();
+        iterator p = obj.begin();
+        iterator q = obj.end();
+        Node<T>* tmp = head;
+        // iterator tmp = 
+        while(p!=q){
+            Node<T>* new_node = new Node<T>(p.iter->obj);
+            tmp->next = new_node;
+            new_node->previous = tmp;
+            p++;
+            tmp = new_node;
+        }
+        tmp->next = end_node;
+        end_node->previous = tmp;
+        this->num = obj.num;
+        this->start_node = this->head->next;
+    }
+    
+}
 
 template<typename T>
 void list<T>::push_back(const value_type &new_elem){
@@ -162,36 +187,36 @@ void list<T>::push_back(const value_type &new_elem){
     new_node->previous = this->end_node->previous;
     new_node->next = this->end_node;
     this->end_node->previous = new_node;
-    if(this->start_node == this->head){
+    if(this->start_node == this->end_node){
         this->start_node = new_node;
     }
+    this->num++;
 }
 
 template<typename T>
 void list<T>::push_front(const value_type &new_elem){
     Node<value_type> *new_node = new Node<value_type>(new_elem);
-    Node<value_type> * tmp = this->start_node->next;
+    // Node<value_type> * tmp = this->start_node->next;
     this->head->next = new_node;
     new_node->previous = this->head;
-    if(empty()){
-        // cout<<"Hhhh"<<endl;
-        new_node->next = tmp;
-        tmp->previous = new_node;
-    }
-    else{
-        new_node->next = this->start_node;
-        this->start_node->previous = new_node;
-    }
+    new_node->next = this->start_node;
+    this->start_node->previous = new_node;
     this->start_node = new_node;
+    this->num++;
 }
 
 template<typename T>
-bool list<T>::empty(){
-    return start_node == head ? true:false;
+bool list<T>::empty() const{
+    return start_node == end_node;
 }
 
 template<typename T>
-MyIterator<T> list<T>::begin(){
+std::size_t list<T>::size() const{
+    return this->num;
+}
+
+template<typename T>
+MyIterator<T> list<T>::begin() const{
     if(empty()){
         throw std::runtime_error("The list is empty.");
     }
@@ -201,9 +226,28 @@ MyIterator<T> list<T>::begin(){
 }
 
 template<typename T>
-MyIterator<T> list<T>::end(){
+MyIterator<T> list<T>::end() const{
+    if(empty()){
+        throw std::runtime_error("The list is empty.");
+    }
     return MyIterator<T>(end_node);
 }
 
+template<typename T>
+void list<T>::free_memory(iterator start_iter, iterator end_iter){
+    if(start_iter< begin() || end_iter > end()){
+        throw std::runtime_error("out of range");
+    }
+    for(auto p=start_iter; p!=end_iter; p++){
+        alloc.destroy(p.iter);
+    }
+}
 
-
+template<typename T>
+void list<T>::clear(){
+    free_memory(begin(), end());
+    end_node = start_node;
+    end_node->previous = head;
+    start_node->next = nullptr;
+    this->num = 0;
+}

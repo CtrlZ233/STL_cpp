@@ -11,6 +11,10 @@ int main(){
     cout << "Is empty ?" << L.empty() << endl;
     L.push_back("three");
     L.push_front("front");
+    L.clear();
+    L.push_back("one");
+    list<string> L2 = L;  // some bugs
+    cout << L.size() << endl;
     // cout << "hhh" <<endl;
     // cout<< L.start_node->obj << endl;
     
