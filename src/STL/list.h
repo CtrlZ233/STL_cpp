@@ -5,6 +5,8 @@
 #include <memory>
 #include <cstddef>
 #include <stdexcept>
+#include <initializer_list>
+
 using namespace std;
 
 template<typename T>
@@ -87,19 +89,19 @@ class MyIterator{
         bool operator != (const MyIterator<T> &i){
             return !(*(this)==i);
         }
-        bool operator < (const MyIterator<T> &i){
-            return this->iter < i.iter;
-        }
-        bool operator > (const MyIterator<T> &i){
-            return this->iter > i.iter;
-        }
-        bool operator >= (const MyIterator<T> &i){
-            return this->iter >= i.iter;
-        }
+        // bool operator < (const MyIterator<T> &i){
+        //     return this->iter < i.iter;
+        // }
+        // bool operator > (const MyIterator<T> &i){
+        //     return this->iter > i.iter;
+        // }
+        // bool operator >= (const MyIterator<T> &i){
+        //     return this->iter >= i.iter;
+        // }
 
-        bool operator <= (const MyIterator<T> &i){
-            return this->iter <= i.iter;
-        }
+        // bool operator <= (const MyIterator<T> &i){
+        //     return this->iter <= i.iter;
+        // }
 
         T operator *(){
             return this->iter->obj;
@@ -117,50 +119,50 @@ class list{
     public:
        
         std::allocator<Node<value_type>> alloc;
-
+        
     private:
         Node<T>* start_node;
         Node<T>* end_node;
-        
         Node<T>* head;
         std::size_t num;
     public:
         list();
         list(const list<T> &obj);
+        list(const initializer_list<T> &t);
         ~list();
-        std::size_t size() const;
+        
         // void push_front(const value_type &new_elem);
+
+        value_type front();
+        value_type back();
+
         void push_back(const value_type &new_elem);
         void push_front(const value_type &new_elem);
+
+        void pop_back();
+        void pop_front();
+
+        void insert(iterator i, const value_type &elem);
+        void erase(iterator first, iterator last);
         iterator begin() const;
         iterator end() const;
         bool empty() const;
+        std::size_t size() const;
         void clear();
     private:
         void free_memory(iterator start_iter, iterator end_iter);
+        void initial_list();
 };
 
 template<typename T>
 list<T>::list(){
-    head = new Node<T>;
-    
-    end_node = new Node<T>;
-    head->next = end_node;
-    start_node = end_node;
-    end_node ->previous = head;
-    this->num = 0;
-}
-
-template<typename T>
-list<T>::~list(){
-    free_memory(begin(), end());
-    alloc.deallocate(start_node, end_node - start_node);
+    initial_list();
 }
 
 template<typename T>
 list<T>::list(const list<T> &obj){
     if(!obj.empty()){
-        list();
+        initial_list();
         iterator p = obj.begin();
         iterator q = obj.end();
         Node<T>* tmp = head;
@@ -178,6 +180,40 @@ list<T>::list(const list<T> &obj){
         this->start_node = this->head->next;
     }
     
+}
+
+template<typename T>
+list<T>::list(const initializer_list<T> &t){
+    initial_list();
+    typename std::initializer_list<T>::iterator op = t.begin();
+    typename std::initializer_list<T>::iterator ed = t.end();
+    while(op != ed){
+        push_back(*op);
+        op ++;
+    }
+
+}
+
+template<typename T>
+list<T>::~list(){
+    free_memory(begin(), end());
+    alloc.deallocate(start_node, end_node - start_node);
+}
+
+template<typename T>
+T list<T>::front(){
+    if(empty()){
+        throw std::runtime_error("empty list!");
+    }
+    return this->start_node->obj;
+}
+
+template<typename T>
+T list<T>::back(){
+    if(empty()){
+        throw std::runtime_error("empty list!");
+    }
+    return this->end_node->previous->obj;
 }
 
 template<typename T>
@@ -203,6 +239,59 @@ void list<T>::push_front(const value_type &new_elem){
     this->start_node->previous = new_node;
     this->start_node = new_node;
     this->num++;
+}
+
+template<typename T>
+void list<T>::pop_back(){
+    if(empty()){
+        throw std::runtime_error("empty list!");
+    }
+    Node<T>* tmp = end_node->previous;
+    tmp->previous->next = end_node;
+    end_node->previous = tmp->previous;
+    alloc.destroy(tmp);
+}
+
+template<typename T>
+void list<T>::pop_front(){
+    if(empty()){
+        throw std::runtime_error("empty list!");
+    }
+    head->next = start_node->next;
+    start_node->next->previous = head;
+    alloc.destroy(start_node);
+    start_node = head->next;
+}
+
+template<typename T>
+void list<T>::insert(iterator i, const value_type &elem){
+    iterator pre;
+    if(i.iter == start_node){
+        pre = head;
+    }
+    else{
+        pre = i-1;
+    }
+    Node<value_type>* new_node = new Node<value_type>(elem);
+    pre.iter->next = new_node;
+    new_node->previous = pre.iter;
+    i.iter->previous = new_node;
+    new_node->next = i.iter;
+    if(pre.iter == head){
+        start_node = new_node;
+    }
+}
+
+template<typename T>
+void list<T>::erase(iterator first, iterator last){
+    iterator p = first--;
+    // if(first < begin() || last > end()){
+    //     throw std::runtime_error("out of range!");
+    // }
+    free_memory(first, last);
+    p.iter->next = last.iter;
+    last.iter->previous = p.iter;
+    this->start_node = this->head->next;
 }
 
 template<typename T>
@@ -235,9 +324,9 @@ MyIterator<T> list<T>::end() const{
 
 template<typename T>
 void list<T>::free_memory(iterator start_iter, iterator end_iter){
-    if(start_iter< begin() || end_iter > end()){
-        throw std::runtime_error("out of range");
-    }
+    // if(start_iter< begin() || end_iter > end()){
+    //     throw std::runtime_error("out of range");
+    // }
     for(auto p=start_iter; p!=end_iter; p++){
         alloc.destroy(p.iter);
     }
@@ -249,5 +338,16 @@ void list<T>::clear(){
     end_node = start_node;
     end_node->previous = head;
     start_node->next = nullptr;
+    this->num = 0;
+}
+
+template<typename T>
+void list<T>::initial_list(){
+    head = new Node<T>;
+    head->previous = nullptr;
+    end_node = new Node<T>;
+    head->next = end_node;
+    start_node = end_node;
+    end_node ->previous = head;
     this->num = 0;
 }

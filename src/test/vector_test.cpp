@@ -1,14 +1,14 @@
 #include "../STL/vector.h"
 #include<stdlib.h>
 int main(){
-    vector<string> v;
-    cout << v.empty() << endl;
+    vector<string> v = {"1", "2", "3"};
+    // cout << v.empty() << endl;
     v.push_back("one");
-    cout << v.max_size() << endl;
+    // cout << v.max_size() << endl;
     v.push_back("two");
-    cout << v.max_size() << endl;
+    // cout << v.max_size() << endl;
     v.push_back("three");
-    cout << v.max_size() << endl;
+    // cout << v.max_size() << endl;
     // v.clear();
     // cout << v.size() << endl;
     // v.push_back("four");
@@ -25,11 +25,11 @@ int main(){
     // cout << "after insert elements..." << endl;
     // v.print_all_elem();
 
-    v.erase(v.start_ptr+1, v.start_ptr+3);
+    // v.erase(v.start_ptr+1, v.start_ptr+3);
     // cout << "after earse elements..." << endl;
     v.print_all_elem();
-    cout << v.max_size() << endl;
-    cout << v.size() << endl;
+    // cout << v.max_size() << endl;
+    // cout << v.size() << endl;
     v.push_back("four");
     v.push_back("five");
     v.push_back("six");
@@ -37,8 +37,9 @@ int main(){
 
     
     v.print_all_elem();
-    cout << v.size() << endl;
-    cout << v.max_size() << endl;
+    // cout << v.size() << endl;
+    // cout << v.max_size() << endl;
+    system("pause");
 
     // vector<int> v;
     // v.push_back(1);

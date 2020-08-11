@@ -6,7 +6,7 @@
 #include <iterator>
 #include<iostream>
 #include<string>
-
+#include<initializer_list>
 using namespace std;
 template <typename T>
 class vector
@@ -20,6 +20,7 @@ class vector
     public:
         vector()=default;
         vector(const vector<T> &obj);
+        vector(const initializer_list<T> &obj);
         ~vector();
         iterator begin() const;
         iterator end() const;
@@ -57,6 +58,15 @@ vector<T>:: vector(const vector &obj){
     this->cap_ptr = this->start_ptr + obj.max_size();
 }
 
+template<typename T>
+vector<T>::vector(const initializer_list<T> &obj){
+    typename std::initializer_list<T>::iterator op = obj.begin();
+    typename std::initializer_list<T>::iterator ed = obj.end();
+    while(op != ed){
+        push_back(*op);
+        op ++;
+    }
+}
 
 template <typename T>
 typename vector<T>:: iterator vector<T>::begin() const{
