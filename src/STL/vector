@@ -16,6 +16,7 @@ class vector
         using value_type = T;
         using iterator = value_type *;
         using size_type = std::size_t;
+        
     
     public:
         vector()=default;

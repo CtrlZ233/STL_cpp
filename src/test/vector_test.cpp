@@ -1,4 +1,4 @@
-#include "../STL/vector.h"
+#include "../STL/vector"
 #include<stdlib.h>
 int main(){
     vector<string> v = {"1", "2", "3"};
