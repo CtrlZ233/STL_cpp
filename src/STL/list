@@ -46,16 +46,18 @@ class MyIterator{
             if(iter->next == nullptr){      // 允许访问尾节点
                 throw std::runtime_error("Invalid memory reference");
             }
+            MyIterator tmp = MyIterator(*this);
             this->iter  = this->iter->next;
-            return *this;
+            return tmp;
         }
         MyIterator operator --(int){
             if(iter->previous->previous == nullptr){    //不允许访问头节点
                 throw std::runtime_error("Invalid memory reference");
             }
+            MyIterator tmp = MyIterator(*this);
             // return MyIterator(iter->previous);
             this->iter = this->iter->previous;
-            return *this;
+            return tmp;
         }
         MyIterator operator +(int i){
             Node<T>* tmp = iter;
