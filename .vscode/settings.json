@@ -43,6 +43,8 @@
         "xtr1common": "cpp",
         "list": "cpp",
         "vector": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "xtree": "cpp",
+        "algorithm": "cpp"
     }
 }
