@@ -1,7 +1,11 @@
+#include<stdlib.h>
+#include<stack>
+#include<iostream>
+using namespace std;
 #define BinNodePosi(T) BinNode<T>*
 #define stature(p) ((p)? (p)->height :-1)
 typedef enum {RB_RED, RB_BLACK} RBColor;
-#include<stdlib.h>
+
 template <typename T>
 class BinNode{
     public:
@@ -71,6 +75,42 @@ template <typename VST> void BinNode<T>:: travIn (VST& visit){
         break;
     }
 }
+
+template<typename T>
+template <typename VST> void BinNode<T>::travPre (VST& visit){
+    switch (rand() % 5)
+    {
+    case 1: travPre_I1(this, visit); 
+        break;
+    case 2: travPre_I2(this, visit); 
+        break;
+    case 3: travPre_I3(this, visit); 
+        break;
+    case 4: travPre_I4(this, visit); 
+        break;
+    
+    default: travPre_R(this, visit);  //递归版
+        break;
+    }
+}
+
+template<typename T>
+template <typename VST> void BinNode<T>::travPost (VST& visit){
+    switch (rand() % 5)
+    {
+    case 1: travPost_I1(this, visit); 
+        break;
+    case 2: travPost_I2(this, visit); 
+        break;
+    case 3: travPost_I3(this, visit); 
+        break;
+    case 4: travPost_I4(this, visit); 
+        break;
+    
+    default: travPost_R(this, visit);  //递归版
+        break;
+    }
+}
 template<typename T>
 int BinNode<T>::size(){
     if(!HasChild(this)) return 1;
@@ -78,9 +118,82 @@ int BinNode<T>::size(){
     if(!HasRChild(this)) return 1 + this->lc->size();
     return 1 + this->rc->size() + this->lc->size();
 }
+template<typename T, typename VST>
+void travPre_R(BinNodePosi(T) x, VST& visit ){
+    if(!x) return;
+    visit(x->data);
+    travPre_R(x->lc, visit);
+    travPre_R(x->rc, visit);
+}
+template<typename T, typename VST>
+void travIn_R(BinNodePosi(T) x, VST& visit ){
+    if(!x) return;
+    travIn_R(x->lc, visit);
+    visit(x->data);
+    travIn_R(x->rc, visit);
+}
 
+template<typename T, typename VST>
+void travPost_R(BinNodePosi(T) x, VST& visit ){
+    if(!x) return;
+    travPost_R(x->lc, visit);
+    travPost_R(x->rc, visit);
+    visit(x->data);
+}
+template<typename T, typename VST>
+void travPre_I1(BinNodePosi(T) x, VST& visit){
+    std::stack<BinNodePosi(T)> s;
+    if (x) s.push(x);
+    while(!s.empty()){
+        x = s.top(); s.pop(); visit(x->data);
+        if(HasRChild(x)) s.push(x->rc); if(HasLChild(x)) s.push(x->lc);
+    }
+}
 
+template<typename T, typename VST>
+static void visitAlongLeftBranch(BinNodePosi(T) x, VST& visit, stack<BinNodePosi(T)>& S){
+    while(x){
+        visit(x->data); S.push(x->rc); x = x->lc;
+    }
+}
+template<typename T, typename VST>
+void travPre_I2(BinNodePosi(T) x, VST& visit){
+    stack<BinNodePosi(T)> S;
+    while(true){
+        visitAlongLeftBranch(x, visit, S);
+        if(S.empty())  break;
+        x = S.top(); S.pop();
+    }
+}
 
+template<typename T>
+void goAlongLeftBranch(BinNodePosi(T) x, stack<BinNodePosi(T)>& S){
+    while(x) {
+        S.push(x); x = x->lc;
+    }
+}
+template<typename T, typename VST>
+void travIn_I1(BinNodePosi(T) x, VST& visit){
+    stack<BinNodePosi(T)> S;
+    while(true){
+        goAlongLeftBranch(x, S);
+        if(S.empty()) break;
+        x = S.top(); S.pop(); visit(x->data);
+        x = x->rc;
+    }
+}
+template<typename T>
+BinNodePosi(T) BinNode<T>::succ(){
+    BinNodePosi(T) s = this;
+    if(rc){
+        s = rc;
+        while(HasLChild(s)) s = s->lc;
+    }
+    else{
+        
+    }
+    return s;
+}
 
 
 

@@ -59,7 +59,7 @@ template<typename T> BinNodePosi(T) BinTree<T>::attachAsLC(BinNodePosi(T) x, Bin
     if(x->lc = t->_root) x->lc->parent = x;
     _size += t->_size;
     updateHeightAbove(x);
-    t->_root = nullptr; t->_size = 0; t = nullptr; delete t;
+    t->_root = nullptr; t->_size = 0; t = nullptr;
     return x;
 }
 template<typename T> BinNodePosi(T) BinTree<T>::attachAsRC(BinNodePosi(T) x, BinTree<T>* &t){
@@ -90,3 +90,4 @@ template<typename T> BinTree<T>* BinTree<T>::secede(BinNodePosi(T) x){
     BinTree<T>* S = new BinTree<T>; S->_root = x; x->parent = nullptr;
     S->_size = x->size(); _size -= S->_size; return S;
 }
+

@@ -20,5 +20,22 @@ int main(){
     cout << tree.root()->height << endl;
     cout << tree.size() << endl;
     cout << tree.root()->lc->lc->data << endl;
-    system("pause");
+
+    tree.insertAsLC(tree.root()->rc, 5);
+    tree.insertAsLC(tree.root()->rc->lc, 6);
+    // system("pause");
+    // travPre_R(tree.root(), print);
+    // cout << endl;
+    // travPre_I1(tree.root(), print);
+    // cout << endl;
+
+    // travPre_I2(tree.root(), print);
+    // cout << endl;
+    // travPost_R(tree.root(), print);
+    // cout << endl;
+    travIn_R(tree.root(), print);
+    cout << endl;
+    travIn_I1(tree.root(), print);
+    cout << endl;
+
 }
