@@ -1,4 +1,5 @@
 #include "BinNode.h"
+#include "Utils.h"
 #include<algorithm>
 #include<memory>
 template<typename T>
@@ -53,12 +54,12 @@ template<typename T> BinNodePosi(T) BinTree<T>::insertAsRC(BinNodePosi(T) x, T c
 template<typename T> BinNodePosi(T) BinTree<T>::insertAsRoot(T const& e){
     _size = 1; 
     return _root = new BinNode<T>(e);
-}
+} 
 template<typename T> BinNodePosi(T) BinTree<T>::attachAsLC(BinNodePosi(T) x, BinTree<T>* &t){
     if(x->lc = t->_root) x->lc->parent = x;
     _size += t->_size;
     updateHeightAbove(x);
-    t->_root = nullptr; t->_size = 0; release(t); t = nullptr; 
+    t->_root = nullptr; t->_size = 0; t = nullptr; delete t;
     return x;
 }
 template<typename T> BinNodePosi(T) BinTree<T>::attachAsRC(BinNodePosi(T) x, BinTree<T>* &t){
@@ -69,7 +70,7 @@ template<typename T> BinNodePosi(T) BinTree<T>::attachAsRC(BinNodePosi(T) x, Bin
     return x;
 }
 template<typename T> int BinTree<T>::remove(BinNodePosi(T) x){
-    FromParentTo(*x) = nullptr;
+    FromParentTo(x) = nullptr;
     updateHeightAbove(x->parent);
     int n = removeAt(x);
     _size -= n;
@@ -80,12 +81,12 @@ template<typename T>
 static int removeAt(BinNodePosi(T) x){
     if(!x) return 0;
     int n = 1 + removeAt(x->lc) + removeAt(x->rc);
-    release(x->data); release(x); return n;
+    delete x; return n;
 }
 
 template<typename T> BinTree<T>* BinTree<T>::secede(BinNodePosi(T) x){
-    FromParentTo(*x) = nullptr;
+    FromParentTo(x) = nullptr;
     updateHeightAbove(x->parent);
     BinTree<T>* S = new BinTree<T>; S->_root = x; x->parent = nullptr;
-    S->_size = x->size(); return S;
+    S->_size = x->size(); _size -= S->_size; return S;
 }
