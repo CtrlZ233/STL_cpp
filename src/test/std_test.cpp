@@ -1,23 +1,40 @@
 #include<list>
 #include<iostream>
 #include<vector>
+#include<stdlib.h>
 #include<algorithm>
 using namespace std;
+#include<string>
+#include<memory.h>
+#include<unordered_map>
+#include<queue>
+#include<math.h>
 
-int main(){
-    // list<int> L = list<int>{1, 2, 3, 4, 5};
-    // list<int>:: iterator p = L.begin();
-    // list<int>:: iterator q = L.end();
-    // bool a = p > q;
-    
-    // system("pause");
+vector<int> subSort(vector<int>& array) {
+	int min = INT32_MAX;
+	int max = INT32_MIN;
+	int len = array.size();
+	int first = -1;
+	int last = -1;
+	for(int i=0; i<len; i++){
+		if(array[i]<max){
+			last = i;
+		}else{
+			max = array[i];
+		}
 
+		if(array[len-i-1] > min){
+			first = len-i-1;
+		}else{
+			min = array[len-i-1];
+		}
+	}
+	vector<int> ans;
+	ans.push_back(first);
+	ans.push_back(last);
+	return ans;
 }
 
-int gcd(int a, int b){
-    if(a%b == 0){
-        return b;
-    }
-    else 
-        return (gcd(b, a%b));
+int main(){
+    system("pause");
 }

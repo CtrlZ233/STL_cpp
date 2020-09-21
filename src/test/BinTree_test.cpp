@@ -23,7 +23,7 @@ int main(){
 
     tree.insertAsLC(tree.root()->rc, 5);
     tree.insertAsLC(tree.root()->rc->lc, 6);
-    // system("pause");
+    // 
     // travPre_R(tree.root(), print);
     // cout << endl;
     // travPre_I1(tree.root(), print);
@@ -33,9 +33,29 @@ int main(){
     // cout << endl;
     // travPost_R(tree.root(), print);
     // cout << endl;
-    travIn_R(tree.root(), print);
+    // travIn_R(tree.root(), print);
+    // cout << endl;
+    // travIn_I1(tree.root(), print);
+    // cout << endl;
+    // travIn_I2(tree.root(), print);
+    // cout << endl;
+    // // cout << tree.root()->lc->succ()->data << endl;
+    // travIn_I3(tree.root(), print);
+    // cout << endl;
+
+    // travPost_R(tree.root(), print);
+    // cout << endl;
+    // travPost_I(tree.root(), print);
+    // cout << endl;
+
+    tree.root()->travIn(print);
     cout << endl;
-    travIn_I1(tree.root(), print);
+    tree.root()->travPre(print);
     cout << endl;
+    tree.root()->travPost(print);
+    cout << endl;
+    tree.root()->travLevel(print);
+    cout << endl;
+    system("pause");
 
 }
